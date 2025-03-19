@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="4.2">
+    <attributes>
+        <attribute name="name" value="prime number"/>
+        <attribute name="authors" value="AaronSam"/>
+        <attribute name="about" value=""/>
+        <attribute name="saved" value="2025-03-13 01:31:45 PM"/>
+        <attribute name="created" value="QWFyb25TYW07REVTS1RPUC00STlPTUlIOzIwMjUtMDMtMTM7MDE6MjA6MzQgUE07MzEyMg=="/>
+        <attribute name="edited" value="QWFyb25TYW07REVTS1RPUC00STlPTUlIOzIwMjUtMDMtMTM7MDE6MzE6NDUgUE07MTszMjM0"/>
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters/>
+        <body>
+            <comment text="prime number"/>
+            <declare name="n, i" type="Integer" array="False" size=""/>
+            <input variable="n"/>
+            <if expression="n&lt;=1">
+                <then>
+                    <output expression="&quot;not prime&quot;" newline="True"/>
+                </then>
+                <else>
+                    <for variable="i" start="2" end="n/2+1" direction="inc" step="1"/>
+                    <if expression="n%i==0">
+                        <then>
+                            <output expression="&quot;not prime&quot;" newline="True"/>
+                        </then>
+                        <else>
+                            <output expression="&quot;prime&quot;" newline="True"/>
+                        </else>
+                    </if>
+                </else>
+            </if>
+        </body>
+    </function>
+</flowgorithm>

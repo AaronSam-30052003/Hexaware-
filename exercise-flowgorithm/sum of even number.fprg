@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="4.2">
+    <attributes>
+        <attribute name="name" value="sum of even number"/>
+        <attribute name="authors" value="AaronSam"/>
+        <attribute name="about" value=""/>
+        <attribute name="saved" value="2025-03-13 02:27:39 PM"/>
+        <attribute name="created" value="QWFyb25TYW07REVTS1RPUC00STlPTUlIOzIwMjUtMDMtMTM7MDI6MTI6NTQgUE07MzEyNg=="/>
+        <attribute name="edited" value="QWFyb25TYW07REVTS1RPUC00STlPTUlIOzIwMjUtMDMtMTM7MDI6Mjc6MzkgUE07MTszMjQz"/>
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters/>
+        <body>
+            <declare name="n, s, i" type="Integer" array="False" size=""/>
+            <input variable="n"/>
+            <assign variable="s" expression="0"/>
+            <for variable="i" start="0" end="n+1" direction="inc" step="1">
+                <if expression="i%2==0">
+                    <then>
+                        <assign variable="s" expression="s+i"/>
+                    </then>
+                    <else/>
+                </if>
+            </for>
+            <output expression="&quot;the sum of even number is&quot;&amp; &quot;&quot;&amp;s" newline="True"/>
+        </body>
+    </function>
+</flowgorithm>

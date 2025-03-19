@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="4.2">
+    <attributes>
+        <attribute name="name" value="sum of number"/>
+        <attribute name="authors" value="AaronSam"/>
+        <attribute name="about" value=""/>
+        <attribute name="saved" value="2025-03-13 03:33:09 PM"/>
+        <attribute name="created" value="QWFyb25TYW07REVTS1RPUC00STlPTUlIOzIwMjUtMDMtMTM7MDI6MDI6MzEgUE07MzEyMA=="/>
+        <attribute name="edited" value="QWFyb25TYW07REVTS1RPUC00STlPTUlIOzIwMjUtMDMtMTM7MDM6MzM6MDkgUE07MzszMjQw"/>
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters/>
+        <body>
+            <comment text="sum of numbers"/>
+            <declare name="n, s, i" type="Integer" array="False" size=""/>
+            <input variable="n"/>
+            <assign variable="s" expression="0"/>
+            <for variable="i" start="0" end="n" direction="inc" step="1">
+                <assign variable="s" expression="s+i"/>
+            </for>
+            <output expression="&quot;the sum of given numbers is:&quot;&amp; &quot;&quot;&amp;s" newline="True"/>
+        </body>
+    </function>
+</flowgorithm>

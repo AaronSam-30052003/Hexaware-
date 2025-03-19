@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="4.2">
+    <attributes>
+        <attribute name="name" value="quadratic equation"/>
+        <attribute name="authors" value="AaronSam"/>
+        <attribute name="about" value=""/>
+        <attribute name="saved" value="2025-03-13 03:08:52 PM"/>
+        <attribute name="created" value="QWFyb25TYW07REVTS1RPUC00STlPTUlIOzIwMjUtMDMtMTM7MDI6Mjc6NDMgUE07MzEzMA=="/>
+        <attribute name="edited" value="QWFyb25TYW07REVTS1RPUC00STlPTUlIOzIwMjUtMDMtMTM7MDM6MDg6NTIgUE07MjszMjM5"/>
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters/>
+        <body>
+            <comment text="quadratic equation"/>
+            <declare name="a, b, c, d, x, x1, x2" type="Integer" array="False" size=""/>
+            <input variable="a"/>
+            <input variable="b"/>
+            <input variable="c"/>
+            <assign variable="d" expression="b^2-(4*a*c)"/>
+            <if expression="d&gt;=0">
+                <then>
+                    <if expression="d&gt;0">
+                        <then>
+                            <assign variable="x" expression="-b/2*a"/>
+                            <output expression="&quot;the root is&quot;&amp; &quot;&quot;&amp;x" newline="True"/>
+                        </then>
+                        <else>
+                            <assign variable="x1" expression="(-b+d)/2*a"/>
+                            <assign variable="x2" expression="(-b-d)/2*a"/>
+                            <output expression="&quot;the roots are&quot;&amp; &quot;&quot;&amp; x1 &amp;x2" newline="True"/>
+                        </else>
+                    </if>
+                </then>
+                <else>
+                    <output expression="&quot;no real roots&quot;" newline="True"/>
+                </else>
+            </if>
+        </body>
+    </function>
+</flowgorithm>

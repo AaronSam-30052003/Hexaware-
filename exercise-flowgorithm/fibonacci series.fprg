@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="4.2">
+    <attributes>
+        <attribute name="name" value="fibonacci series"/>
+        <attribute name="authors" value="AaronSam"/>
+        <attribute name="about" value=""/>
+        <attribute name="saved" value="2025-03-13 02:02:27 PM"/>
+        <attribute name="created" value="QWFyb25TYW07REVTS1RPUC00STlPTUlIOzIwMjUtMDMtMTM7MDE6NTQ6MDYgUE07MzEyOA=="/>
+        <attribute name="edited" value="QWFyb25TYW07REVTS1RPUC00STlPTUlIOzIwMjUtMDMtMTM7MDI6MDI6MjcgUE07MTszMjMz"/>
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters/>
+        <body>
+            <comment text="fibonacci series"/>
+            <declare name="n, n1, n2, n3, c" type="Integer" array="False" size=""/>
+            <input variable="n"/>
+            <assign variable="n1" expression="0"/>
+            <assign variable="n2" expression="1"/>
+            <assign variable="n3" expression="0"/>
+            <assign variable="c" expression="1"/>
+            <while expression="c&lt;=n">
+                <output expression="&quot;&quot;&amp;n3" newline="True"/>
+                <assign variable="c" expression="c+1"/>
+                <assign variable="n1" expression="n2"/>
+                <assign variable="n2" expression="n3"/>
+                <assign variable="n3" expression="n1+n2"/>
+            </while>
+        </body>
+    </function>
+</flowgorithm>

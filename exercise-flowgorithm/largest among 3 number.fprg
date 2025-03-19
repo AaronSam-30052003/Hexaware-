@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="4.2">
+    <attributes>
+        <attribute name="name" value="largest among 3 number"/>
+        <attribute name="authors" value="AaronSam"/>
+        <attribute name="about" value=""/>
+        <attribute name="saved" value="2025-03-13 12:46:53 PM"/>
+        <attribute name="created" value="QWFyb25TYW07REVTS1RPUC00STlPTUlIOzIwMjUtMDMtMTM7MTI6NDE6MjkgUE07MzEzMQ=="/>
+        <attribute name="edited" value="QWFyb25TYW07REVTS1RPUC00STlPTUlIOzIwMjUtMDMtMTM7MTI6NDY6NTMgUE07MTszMjQx"/>
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters/>
+        <body>
+            <comment text="largest among 3 number"/>
+            <declare name="a, b, c" type="Integer" array="False" size=""/>
+            <input variable="a"/>
+            <input variable="b"/>
+            <input variable="c"/>
+            <if expression="a&gt;b and a&gt;c">
+                <then>
+                    <output expression="&quot;a is large&quot;" newline="True"/>
+                </then>
+                <else>
+                    <if expression="b&gt;a and b&gt;c">
+                        <then>
+                            <output expression="&quot;b is large&quot;" newline="True"/>
+                        </then>
+                        <else>
+                            <if expression="c&gt;a and c&gt;b">
+                                <then>
+                                    <output expression="&quot; c is large&quot;" newline="True"/>
+                                </then>
+                                <else/>
+                            </if>
+                        </else>
+                    </if>
+                </else>
+            </if>
+        </body>
+    </function>
+</flowgorithm>

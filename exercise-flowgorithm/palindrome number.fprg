@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="4.2">
+    <attributes>
+        <attribute name="name" value="palindrome number"/>
+        <attribute name="authors" value="AaronSam"/>
+        <attribute name="about" value=""/>
+        <attribute name="saved" value="2025-03-13 01:53:42 PM"/>
+        <attribute name="created" value="QWFyb25TYW07REVTS1RPUC00STlPTUlIOzIwMjUtMDMtMTM7MTI6NDc6MDQgUE07MzEzMA=="/>
+        <attribute name="edited" value="QWFyb25TYW07REVTS1RPUC00STlPTUlIOzIwMjUtMDMtMTM7MDE6NTM6NDIgUE07MzszMjM3"/>
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters/>
+        <body>
+            <comment text="plaindrome number"/>
+            <declare name="s, temp, a, r" type="Integer" array="False" size=""/>
+            <input variable="s"/>
+            <assign variable="a" expression="0"/>
+            <assign variable="temp" expression="s"/>
+            <while expression="s&gt;0">
+                <assign variable="r" expression="s%10"/>
+                <assign variable="a" expression="(a*10)+r"/>
+                <assign variable="s" expression="s/10"/>
+                <if expression="a==temp">
+                    <then>
+                        <output expression="&quot;the given number is palindrome&quot;" newline="True"/>
+                    </then>
+                    <else/>
+                </if>
+            </while>
+            <output expression="&quot;not palindrome number&quot;" newline="True"/>
+        </body>
+    </function>
+</flowgorithm>

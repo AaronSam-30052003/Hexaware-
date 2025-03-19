@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="4.2">
+    <attributes>
+        <attribute name="name" value="factorial number"/>
+        <attribute name="authors" value="AaronSam"/>
+        <attribute name="about" value=""/>
+        <attribute name="saved" value="2025-03-13 01:20:23 PM"/>
+        <attribute name="created" value="QWFyb25TYW07REVTS1RPUC00STlPTUlIOzIwMjUtMDMtMTM7MDE6MDQ6MjcgUE07MzEyNg=="/>
+        <attribute name="edited" value="QWFyb25TYW07REVTS1RPUC00STlPTUlIOzIwMjUtMDMtMTM7MDE6MjA6MjMgUE07MTszMjI4"/>
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters/>
+        <body>
+            <comment text="factorial number"/>
+            <declare name="n, f, i" type="Integer" array="False" size=""/>
+            <input variable="n"/>
+            <assign variable="f" expression="1"/>
+            <if expression="n&lt;0">
+                <then>
+                    <output expression="&quot;number cannot be negative&quot;" newline="True"/>
+                </then>
+                <else>
+                    <if expression="n=0 or n=1">
+                        <then>
+                            <output expression="&quot;the factorial is 1&quot;" newline="True"/>
+                        </then>
+                        <else>
+                            <for variable="i" start="1" end="n+1" direction="inc" step="1">
+                                <assign variable="f" expression="f*i"/>
+                            </for>
+                            <output expression="&quot;the factorial of given number is&quot; &amp; &quot;&quot;&amp;f" newline="True"/>
+                        </else>
+                    </if>
+                </else>
+            </if>
+        </body>
+    </function>
+</flowgorithm>
