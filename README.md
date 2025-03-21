@@ -1,2 +1,2 @@
 # Hexaware-
-This repository contains sql coding .
+This repository contains all the activities(task,assessment,coding challenges,case study) that have done during the training.
