@@ -1,4 +1,4 @@
---1)INTIALIZE THE DATABASE
+--1)INITIALIZE THE DATABASE
 IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'CODINGCHALLENGE')
 BEGIN
     CREATE DATABASE CODINGCHALLENGE;
@@ -6,7 +6,8 @@ END
 GO
 USE CODINGCHALLENGE;
 GO
--- 4)Drop tables if they exist to avoid errors
+-- 4)DROP TABLES IF THEY EXIST TO AVOID ERRORS
+
 IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Pets') 
 DROP TABLE Pets;
 IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Shelters') 
@@ -108,29 +109,64 @@ SELECT Name, Age, Breed, Type
 FROM Pets
 WHERE AvailableForAdoption = 1;
 GO
---6)Assume you will pass EventID as a parameter
+--6)ASSUME YOU WILL PASS EVENTID AS A PARAMETER
 DECLARE @EventID INT = 1; 
 SELECT Participant_Name, Participant_Type
 FROM Participants
 WHERE Event_ID = @EventID;
 GO
---7)
---8)
---9)
+--7)STORED PROCEDURE TO ALLOW A SHELTER TO UPDATE ITS INFORMATION
+CREATE PROCEDURE UpdateShelterInfo
+    @ShelterID INT,
+    @NewName NVARCHAR(100),
+    @NewLocation NVARCHAR(255)
+AS
+    IF EXISTS (SELECT 1 FROM Shelters WHERE ShelterID = @ShelterID)
+        UPDATE Shelters
+        SET Name = @NewName, Location = @NewLocation
+        WHERE ShelterID = @ShelterID;
+    ELSE
+        PRINT 'Shelter not found.';
+GO
+--8) SQL QUERY TO CALCULATE TOTAL DONATION AMOUNT BY SHELTER
+SELECT S.Name AS ShelterName, 
+       SUM(D.Donation_Amount) AS TotalDonationAmount
+FROM Donations D,Shelters S WHERE S.ShelterID = D.Donation_ID 
+GROUP BY S.Name;
+GO
+--9)RETRIEVE PETS WHERE PET_ID IS NULL
 SELECT Name, Age, Breed, Type
 FROM Pets
 WHERE Pet_ID IS NULL;
 GO
---10)RETRIEVE UNIQUE BREED OF PETS AGE BETWEEN 1 AND 3 OR AGE >5
-SELECT DISTINCT Breed
+--10)DONATION AMOUNT GROUPED BY MONTH-YEAR
+SELECT 
+	FORMAT(Donation_Date, 'MMMM yyyy') AS MonthYear, 
+    SUM(Donation_Amount) AS TotalDonationAmount
+FROM Donations
+GROUP BY FORMAT(Donation_Date, 'MMMM yyyy')
+ORDER BY MonthYear;
+GO
+--11)RETRIEVE UNIQUE BREED OF PETS AGE BETWEEN 1 AND 3 OR AGE >5
+SELECT DISTINCT Breed,Name
 FROM Pets
 WHERE (Age BETWEEN 1 AND 3) OR Age > 5;
 GO
---11)
---12)
---13)
+--12)PETS WITH THEIR SHELTER INFORMATION, AVAILABLE FOR ADOPTION
+SELECT P.Name AS PetName, P.Age, P.Breed, P.Type, S.Name AS ShelterName
+FROM Pets P, Shelters S
+WHERE P.Pet_ID = S.ShelterID AND P.AvailableForAdoption = 1;
+GO
+--13)PARTICIPANTS FROM A SPECIFIC CITY
+DECLARE @City NVARCHAR(100) = 'Chennai'; 
+SELECT COUNT(P.Participant_ID) AS TotalParticipants
+FROM Participants P
+JOIN AdoptionEvents A ON P.Event_ID = A.Event_ID
+JOIN Shelters S ON A.Location = S.Location
+WHERE S.Location = @City;
+GO
 --14) RETRIEVE UNIQUE BREED OF PETS AGE BETWEEN 1 AND 5
-SELECT DISTINCT Breed
+SELECT DISTINCT Breed,Name
 FROM Pets
 WHERE Age BETWEEN 1 AND 5;
 GO
@@ -139,11 +175,30 @@ SELECT Name, Age, Breed, Type
 FROM Pets
 WHERE AvailableForAdoption = 1;
 GO
---16)
---17)
---18)
---19)
---20)
-
-
-
+--16)RETRIEVE UNIQUE BREED OF PETS AGED BETWEEN 1 AND 5
+SELECT P.Name AS PetName, A.Event_Name
+FROM Pets P,AdoptionEvents A WHERE P.Pet_ID = A.Event_ID AND A.Event_ID = 1;
+GO
+--17)AVAILABLE PETS COUNT PER SHELTER
+SELECT S.Name AS ShelterName, 
+COUNT(P.Pet_ID) AS AvailablePetsCount
+FROM Shelters S
+LEFT JOIN Pets P ON S.ShelterID = P.Pet_ID AND P.AvailableForAdoption = 1
+GROUP BY S.Name;
+GO
+--18)PETS WITH THE SAME BREED
+SELECT P1.Name AS Pet1, P2.Name AS Pet2, P1.Breed AS Breed, P1.Pet_ID
+FROM Pets P1,Pets P2 
+WHERE P1.Pet_ID = P2.Pet_ID  AND P1.Pet_ID < P2.Pet_ID AND P1.Breed = P2.Breed;  
+GO
+--19)SHELTERS AND ADOPTION EVENTS
+SELECT S.Name AS ShelterName, A.Event_Name AS EventName
+FROM Shelters S,AdoptionEvents A;
+GO
+--20)TOP 1 SHELTER WITH THE HIGHEST NUMBER OF ADOPTED PETS
+SELECT TOP 1 S.Name AS ShelterName, COUNT(P.Pet_ID) AS AdoptedPetsCount
+FROM Shelters S,Pets P 
+WHERE S.ShelterID = P.Pet_ID AND P.Pet_ID IS NOT NULL
+GROUP BY S.Name
+ORDER BY AdoptedPetsCount DESC;
+GO
