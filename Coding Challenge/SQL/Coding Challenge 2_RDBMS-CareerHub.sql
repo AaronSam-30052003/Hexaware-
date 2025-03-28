@@ -4,16 +4,18 @@ CREATE DATABASE CareerHub;
 GO
 USE CareerHub;
 GO
+--Create schema 
+CREATE SCHEMA CareerhubSchema;
 -- Create Companies Table
-IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Companies')
-CREATE TABLE Companies (
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'CareerhubSchema.Companies')
+CREATE TABLE CareerhubSchema.Companies (
         CompanyID INT PRIMARY KEY, 
         CompanyName NVARCHAR(255), 
         Location NVARCHAR(255)
     );
 GO
 --insert data into companies table
-INSERT INTO Companies (CompanyID, CompanyName, Location)
+INSERT INTO CareerhubSchema.Companies (CompanyID, CompanyName, Location)
 VALUES 
 (1, 'Hexaware', 'Chennai'),
 (2, 'Avasoft', 'Chennai'),
@@ -27,8 +29,8 @@ VALUES
 (10, 'SmartSystems', 'Boston');
 GO
 -- Create Jobs Table
-IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Jobs')
-    CREATE TABLE Jobs (
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'CareerhubSchema.Jobs')
+    CREATE TABLE CareerhubSchema.Jobs (
         JobID INT PRIMARY KEY,
         CompanyID INT,
         JobTitle NVARCHAR(255),
@@ -37,10 +39,10 @@ IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Jobs')
         Salary DECIMAL(18, 2),
         JobType NVARCHAR(50),
         PostedDate DATETIME,
-        CONSTRAINT FK_Job_Company FOREIGN KEY (CompanyID) REFERENCES Companies(CompanyID));
+        CONSTRAINT FK_Job_Company FOREIGN KEY (CompanyID) REFERENCES CareerhubSchema.Companies(CompanyID)ON DELETE CASCADE);
 GO
 --insert values into jobs table
-INSERT INTO Jobs (JobID, CompanyID, JobTitle, JobDescription, JobLocation, Salary, JobType, PostedDate)
+INSERT INTO CareerhubSchema.Jobs (JobID, CompanyID, JobTitle, JobDescription, JobLocation, Salary, JobType, PostedDate)
 VALUES 
 (1, 1, 'Software Developer', 'Develop and maintain software applications', 'New York', 90000.00, 'Full-time', '2025-03-01'),
 (2, 2, 'Product Manager', 'Oversee product development and launch', 'San Francisco', 120000.00, 'Full-time', '2025-03-05'),
@@ -54,8 +56,8 @@ VALUES
 (10, 10, 'Marketing Specialist', 'Plan and execute marketing campaigns', 'Boston', 75000.00, 'Full-time', '2025-03-22');
 GO
 -- Create Applicants Table
-IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Applicants' )
-CREATE TABLE Applicants (
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'CareerhubSchema.Applicants' )
+CREATE TABLE CareerhubSchema.Applicants (
         ApplicantID INT PRIMARY KEY, 
         FirstName NVARCHAR(100), 
         LastName NVARCHAR(100), 
@@ -64,7 +66,7 @@ CREATE TABLE Applicants (
         Resume TEXT
     );
 GO
-INSERT INTO Applicants (ApplicantID, FirstName, LastName, Email, Phone, Resume)
+INSERT INTO CareerhubSchema.Applicants (ApplicantID, FirstName, LastName, Email, Phone, Resume)
 VALUES 
 (1, 'Aaron', 'sam', 'aaronsam2508@gmail.com', '1234567890', 'Resume content for Aaron'),
 (2, 'Sobana', 'RS', 'sobana3004@gmail.com', '1234567891', 'Resume content for Sobana'),
@@ -78,18 +80,18 @@ VALUES
 (10, 'Hannah', 'Anderson', 'hannah@gmail.com', '1234567899', 'Resume content for Hannah Anderson');
 GO
 -- Create Applications Table
-IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Applications' )
-CREATE TABLE Applications (
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'CareerhubSchema.Applications' )
+CREATE TABLE CareerhubSchema.Applications (
         ApplicationID INT PRIMARY KEY, 
         JobID INT, 
         ApplicantID INT, 
         ApplicationDate DATETIME, 
         CoverLetter TEXT,
-        CONSTRAINT FK_Application_Job FOREIGN KEY (JobID) REFERENCES Jobs(JobID),
-        CONSTRAINT FK_Application_Applicant FOREIGN KEY (ApplicantID) REFERENCES Applicants(ApplicantID)
+        CONSTRAINT FK_Application_Job FOREIGN KEY (JobID) REFERENCES CareerhubSchema.Jobs(JobID) ON DELETE CASCADE,
+        CONSTRAINT FK_Application_Applicant FOREIGN KEY (ApplicantID) REFERENCES CareerhubSchema.Applicants(ApplicantID) ON DELETE CASCADE
     );
 GO
-INSERT INTO Applications (ApplicationID, JobID, ApplicantID, ApplicationDate, CoverLetter)
+INSERT INTO CareerhubSchema.Applications (ApplicationID, JobID, ApplicantID, ApplicationDate, CoverLetter)
 VALUES 
 (1, 1, 1, '2025-03-01', 'Cover letter for John Doe applying to Software Developer'),
 (2, 2, 2, '2025-03-06', 'Cover letter for Jane Smith applying to Product Manager'),
@@ -105,119 +107,119 @@ GO
 --5)Count the number of applications for each job listing
 SELECT J.JobTitle, 
        COUNT(A.ApplicationID) AS ApplicationCount
-FROM Jobs J
-LEFT JOIN Applications A ON J.JobID = A.JobID
+FROM CareerhubSchema.Jobs J
+LEFT JOIN CareerhubSchema.Applications A ON J.JobID = A.JobID
 GROUP BY J.JobTitle;
 GO
 --6) Retrieve job listings within a specified salary range
 DECLARE @MinSalary DECIMAL(10, 2) = 50000;
 DECLARE @MaxSalary DECIMAL(10, 2) = 100000;
 SELECT J.JobTitle, C.CompanyName, J.JobLocation, J.Salary
-FROM Jobs J
-JOIN Companies C ON J.CompanyID = C.CompanyID
+FROM CareerhubSchema.Jobs J
+JOIN CareerhubSchema.Companies C ON J.CompanyID = C.CompanyID
 WHERE J.Salary BETWEEN @MinSalary AND @MaxSalary;
 --OR 
 SELECT J.JobTitle, C.CompanyName, J.JobLocation, J.Salary
-FROM Jobs J,Companies C WHERE J.CompanyID = C.CompanyID
+FROM CareerhubSchema.Jobs J,CareerhubSchema.Companies C WHERE J.CompanyID = C.CompanyID
  AND J.Salary BETWEEN @MinSalary AND @MaxSalary;
 GO
 --7 Job application history for a specific applicant
 DECLARE @ApplicantID INT = 1;
 SELECT J.JobTitle, C.CompanyName, A.ApplicationDate
-FROM Applications A,Jobs J,Companies C 
+FROM CareerhubSchema.Applications A,CareerhubSchema.Jobs J,CareerhubSchema.Companies C 
 WHERE  A.JobID = J.JobID AND J.CompanyID = C.CompanyID AND A.ApplicantID = @ApplicantID;
 GO
 --8)Average salary offered by all companies
 SELECT AVG(Salary) AS AverageSalary
-FROM Jobs WHERE Salary > 0;
+FROM CareerhubSchema.Jobs WHERE Salary > 0;
 GO
 --9)Identify the company with the most job listings
 SELECT TOP 1 C.CompanyName, COUNT(J.JobID) AS JobCount
-FROM Companies C,Jobs J WHERE C.CompanyID = J.CompanyID
+FROM CareerhubSchema.Companies C,CareerhubSchema.Jobs J WHERE C.CompanyID = J.CompanyID
 GROUP BY C.CompanyName
 ORDER BY JobCount DESC;
 --OR 
 SELECT TOP 1 C.CompanyName, COUNT(J.JobID) AS JobCount
-FROM Companies C
-JOIN Jobs J ON C.CompanyID = J.CompanyID
+FROM CareerhubSchema.Companies C
+JOIN CareerhubSchema.Jobs J ON C.CompanyID = J.CompanyID
 GROUP BY C.CompanyName
 ORDER BY JobCount DESC;
 GO
 --10)Applicants who applied to companies in 'CityX' and have 3+ years of experience
 SELECT A.FirstName, A.LastName, C.CompanyName, J.JobTitle
-FROM Applicants A
-JOIN Applications App ON A.ApplicantID = App.ApplicantID
-JOIN Jobs J ON App.JobID = J.JobID
-JOIN Companies C ON J.CompanyID = C.CompanyID
+FROM CareerhubSchema.Applicants A
+JOIN CareerhubSchema.Applications App ON A.ApplicantID = App.ApplicantID
+JOIN CareerhubSchema.Jobs J ON App.JobID = J.JobID
+JOIN CareerhubSchema.Companies C ON J.CompanyID = C.CompanyID
 WHERE C.Location = 'CityX' AND DATEDIFF(YEAR, App.ApplicationDate, GETDATE()) >= 3;
 GO
 --11) Distinct job titles with salaries between 60,000 and 80,000
-SELECT DISTINCT JobTitle FROM Jobs
+SELECT DISTINCT JobTitle FROM CareerhubSchema.Jobs
 WHERE Salary BETWEEN 60000 AND 80000;
 GO
 --12)Find jobs with no applications
-SELECT J.JobTitle FROM Jobs J
-LEFT JOIN Applications A ON J.JobID = A.JobID
+SELECT J.JobTitle FROM CareerhubSchema.Jobs J
+LEFT JOIN CareerhubSchema.Applications A ON J.JobID = A.JobID
 WHERE A.ApplicationID IS NULL;
 GO
 --13) List of job applicants with the companies and positions they applied to
 SELECT A.FirstName, A.LastName, C.CompanyName, J.JobTitle
-FROM Applicants A
-JOIN Applications App ON A.ApplicantID = App.ApplicantID
-JOIN Jobs J ON App.JobID = J.JobID
-JOIN Companies C ON J.CompanyID = C.CompanyID;
+FROM CareerhubSchema.Applicants A
+JOIN CareerhubSchema.Applications App ON A.ApplicantID = App.ApplicantID
+JOIN CareerhubSchema.Jobs J ON App.JobID = J.JobID
+JOIN CareerhubSchema.Companies C ON J.CompanyID = C.CompanyID;
 --OR
 SELECT A.FirstName, A.LastName, C.CompanyName, J.JobTitle
-FROM Applicants A,Applications App,Jobs J,Companies C
+FROM CareerhubSchema.Applicants A,CareerhubSchema.Applications App,CareerhubSchema.Jobs J,CareerhubSchema.Companies C
 WHERE A.ApplicantID = App.ApplicantID AND App.JobID = J.JobID AND J.CompanyID = C.CompanyID;
 GO
 --14)List of companies with the count of jobs they have posted
 SELECT C.CompanyName, COUNT(J.JobID) AS JobCount
-FROM Companies C
-LEFT JOIN Jobs J ON C.CompanyID = J.CompanyID
+FROM CareerhubSchema.Companies C
+LEFT JOIN CareerhubSchema.Jobs J ON C.CompanyID = J.CompanyID
 GROUP BY C.CompanyName;
 GO
 --15)List all applicants and the companies/positions they applied for including those who have not applied
 SELECT A.FirstName, A.LastName, C.CompanyName AS CompanyName, J.JobTitle AS JobTitle
-FROM Applicants A
-LEFT JOIN Applications App ON A.ApplicantID = App.ApplicantID
-LEFT JOIN Jobs J ON App.JobID = J.JobID
-LEFT JOIN Companies C ON J.CompanyID = C.CompanyID;
+FROM CareerhubSchema.Applicants A
+LEFT JOIN CareerhubSchema.Applications App ON A.ApplicantID = App.ApplicantID
+LEFT JOIN CareerhubSchema.Jobs J ON App.JobID = J.JobID
+LEFT JOIN CareerhubSchema.Companies C ON J.CompanyID = C.CompanyID;
 GO
 --16)Find companies with jobs offering salary higher than the average salary of all jobs
 SELECT C.CompanyName
-FROM Companies C
-JOIN Jobs J ON C.CompanyID = J.CompanyID
-WHERE J.Salary > (SELECT AVG(Salary) FROM Jobs WHERE Salary > 0);
+FROM CareerhubSchema.Companies C
+JOIN CareerhubSchema.Jobs J ON C.CompanyID = J.CompanyID
+WHERE J.Salary > (SELECT AVG(Salary) FROM CareerhubSchema.Jobs WHERE Salary > 0);
 --OR
 SELECT C.CompanyName
-FROM Companies C,Jobs J 
+FROM CareerhubSchema.Companies C,CareerhubSchema.Jobs J 
 WHERE C.CompanyID = J.CompanyID
-AND J.Salary > (SELECT AVG(Salary) FROM Jobs WHERE Salary > 0);
+AND J.Salary > (SELECT AVG(Salary) FROM CareerhubSchema.Jobs WHERE Salary > 0);
 GO
 --17)Display applicants with names and concatenated city and state
 --AS THERE IS NO ATTRIBUTE AND CITY AND STATE I HAVE USED LOCATION ATTRIBUTE FORM COMPANIES TABLE
 SELECT A.FirstName + ' ' + A.LastName AS ApplicantName, 
        C.Location AS Location
-FROM Applicants A,Companies C
+FROM CareerhubSchema.Applicants A,CareerhubSchema.Companies C
 WHERE A.ApplicantID=C.CompanyID;
 GO
 --18) Retrieve jobs with titles containing Developer or Engineer
-SELECT JobTitle FROM Jobs
+SELECT JobTitle FROM CareerhubSchema.Jobs
 WHERE JobTitle LIKE '%Developer%' OR JobTitle LIKE '%Engineer%';
 GO
 --19)List applicants and jobs they applied for, including those without applications
 SELECT A.FirstName, A.LastName, J.JobTitle AS JobTitle
-FROM Applicants A
-LEFT JOIN Applications App ON A.ApplicantID = App.ApplicantID
-LEFT JOIN Jobs J ON App.JobID = J.JobID;
+FROM CareerhubSchema.Applicants A
+LEFT JOIN CareerhubSchema.Applications App ON A.ApplicantID = App.ApplicantID
+LEFT JOIN CareerhubSchema.Jobs J ON App.JobID = J.JobID;
 GO
 --20) List all combinations of applicants and companies based on a specific city and experience of more than 2 years
 SELECT A.FirstName, A.LastName, C.CompanyName
-FROM Applicants A
-JOIN Applications App ON A.ApplicantID = App.ApplicantID
-JOIN Jobs J ON App.JobID = J.JobID
-JOIN Companies C ON J.CompanyID = C.CompanyID
+FROM CareerhubSchema.Applicants A
+JOIN CareerhubSchema.Applications App ON A.ApplicantID = App.ApplicantID
+JOIN CareerhubSchema.Jobs J ON App.JobID = J.JobID
+JOIN CareerhubSchema.Companies C ON J.CompanyID = C.CompanyID
 WHERE C.Location = 'Chennai' AND DATEDIFF(YEAR, App.ApplicationDate, GETDATE()) > 2 ;
 GO
 
