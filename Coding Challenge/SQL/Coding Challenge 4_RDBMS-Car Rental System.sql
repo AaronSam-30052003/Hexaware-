@@ -1,7 +1,9 @@
 USE CODINGCHALLENGE;
 GO
+--create schema
+CREATE SCHEMA CarSchema;
 -- Create Vehicle Table
-CREATE TABLE Vehicle (
+CREATE TABLE CarSchema.Vehicle (
     vehicleID INT PRIMARY KEY,
     make NVARCHAR(50),
     model NVARCHAR(50),
@@ -12,7 +14,7 @@ CREATE TABLE Vehicle (
     engineCapacity INT
 );
 -- Insert values into Vehicle Table
-INSERT INTO Vehicle (vehicleID, make, model, year, dailyRate, status, passengerCapacity, engineCapacity)
+INSERT INTO CarSchema.Vehicle (vehicleID, make, model, year, dailyRate, status, passengerCapacity, engineCapacity)
 VALUES 
 (1, 'Toyota', 'Camry', 2022, 50.00, 'available', 4, 1450),
 (2, 'Honda', 'Civic', 2023, 45.00, 'available', 7, 1500),
@@ -26,7 +28,7 @@ VALUES
 (10, 'Lexus', 'ES', 2023, 54.00, 'available', 4, 2500);
 GO
 -- Create Customer Table
-CREATE TABLE Customer (
+CREATE TABLE CarSchema.Customer (
     customerID INT PRIMARY KEY,
     firstName NVARCHAR(50),
     lastName NVARCHAR(50),
@@ -34,7 +36,7 @@ CREATE TABLE Customer (
     phoneNumber NVARCHAR(15)
 );
 -- Insert values into Customer Table
-INSERT INTO Customer (customerID, firstName, lastName, email, phoneNumber)
+INSERT INTO CarSchema.Customer (customerID, firstName, lastName, email, phoneNumber)
 VALUES 
 (1, 'John', 'Doe', 'johndoe@example.com', '555-555-5555'),
 (2, 'Jane', 'Smith', 'janesmith@example.com', '555-123-4567'),
@@ -48,18 +50,18 @@ VALUES
 (10, 'Olivia', 'Adams', 'olivia@example.com', '555-765-4321');
 GO
 -- Create Lease Table
-CREATE TABLE Lease (
+CREATE TABLE CarSchema.Lease (
     leaseID INT PRIMARY KEY,
     vehicleID INT,
     customerID INT,
     startDate DATE,
     endDate DATE,
     leaseType NVARCHAR(20),
-    CONSTRAINT FK_Lease_Vehicle FOREIGN KEY (vehicleID) REFERENCES Vehicle(vehicleID),
-    CONSTRAINT FK_Lease_Customer FOREIGN KEY (customerID) REFERENCES Customer(customerID)
+    CONSTRAINT FK_Lease_Vehicle FOREIGN KEY (vehicleID) REFERENCES CarSchema.Vehicle(vehicleID)ON DELETE CASCADE,
+    CONSTRAINT FK_Lease_Customer FOREIGN KEY (customerID) REFERENCES CarSchema.Customer(customerID)ON DELETE CASCADE
 );
 -- Insert values into Lease Table
-INSERT INTO Lease (leaseID, vehicleID, customerID, startDate, endDate, leaseType)
+INSERT INTO CarSchema.Lease (leaseID, vehicleID, customerID, startDate, endDate, leaseType)
 VALUES
 (1, 1, 1, '2023-01-01', '2023-01-05', 'Daily'),
 (2, 2, 2, '2023-02-15', '2023-02-28', 'Monthly'),
@@ -73,15 +75,15 @@ VALUES
 (10, 10, 10, '2023-10-10', '2023-10-31', 'Monthly');
 GO
 -- Create Payment Table
-CREATE TABLE Payment (
+CREATE TABLE CarSchema.Payment (
     paymentID INT PRIMARY KEY,
     leaseID INT,
     paymentDate DATE,
     amount DECIMAL(10, 2),
-    CONSTRAINT FK_Payment_Lease FOREIGN KEY (leaseID) REFERENCES Lease(leaseID)
+    CONSTRAINT FK_Payment_Lease FOREIGN KEY (leaseID) REFERENCES CarSchema.Lease(leaseID)ON DELETE CASCADE
 );
 -- Insert values into Payment Table
-INSERT INTO Payment (paymentID, leaseID, paymentDate, amount)
+INSERT INTO CarSchema.Payment (paymentID, leaseID, paymentDate, amount)
 VALUES
 (1, 1, '2023-01-03', 200.00),
 (2, 2, '2023-02-20', 1000.00),
@@ -95,132 +97,131 @@ VALUES
 (10, 10, '2023-10-25', 1500.00);
 GO
 --Update the daily rate for a Mercedes car to 68
-UPDATE Vehicle 
+UPDATE CarSchema.Vehicle 
 SET dailyRate = 68.00
 WHERE make = 'Mercedes' AND model = 'C-Class';
 GO
 --Delete a specific customer and all associated leases and payments:
-DELETE FROM Payment WHERE leaseID IN (SELECT leaseID FROM Lease WHERE customerID = 3);
-DELETE FROM Lease WHERE customerID = 3;
-DELETE FROM Customer WHERE customerID = 3;
+DELETE FROM CarSchema.Payment WHERE leaseID IN (SELECT leaseID FROM Lease WHERE customerID = 3);
+DELETE FROM CarSchema.Lease WHERE customerID = 3;
+DELETE FROM CarSchema.Customer WHERE customerID = 3;
 GO
 --Rename the paymentDate column in the Payment table to transactionDate:
-EXEC sp_rename 'Payment.paymentDate', 'transactionDate', 'COLUMN';
+EXEC sp_rename 'CarSchema.Payment.paymentDate', 'transactionDate', 'COLUMN';
 GO
 --Find a specific customer by email
-SELECT * FROM Customer WHERE email = 'janesmith@example.com';
+SELECT * FROM CarSchema.Customer WHERE email = 'janesmith@example.com';
 GO
 --Get active leases for a specific customer
-SELECT * FROM Lease
+SELECT * FROM CarSchema.Lease
 WHERE customerID = 1 AND endDate > GETDATE();
 GO
 --Find all payments made by a customer with a specific phone number
-SELECT * FROM Payment
-WHERE leaseID IN (SELECT leaseID FROM Lease
-                  WHERE customerID = (SELECT customerID FROM Customer WHERE phoneNumber = '555-555-5555'));
+SELECT * FROM CarSchema.Payment
+WHERE leaseID IN (SELECT leaseID FROM CarSchema.Lease
+                  WHERE customerID = (SELECT customerID FROM CarSchema.Customer WHERE phoneNumber = '555-555-5555'));
 GO
 --Calculate the average daily rate of all available cars
 SELECT AVG(dailyRate) AS AverageDailyRate
-FROM Vehicle
+FROM CarSchema.Vehicle
 WHERE status = 'available';
 GO
 --Find the car with the highest daily rate
-SELECT TOP 1 * FROM Vehicle
+SELECT TOP 1 * FROM CarSchema.Vehicle
 ORDER BY dailyRate DESC;
 GO
 --Retrieve all cars leased by a specific customer
 SELECT v.make, v.model, v.year, l.startDate, l.endDate
-FROM Vehicle v
-JOIN Lease l ON v.vehicleID = l.vehicleID
+FROM CarSchema.Vehicle v
+JOIN CarSchema.Lease l ON v.vehicleID = l.vehicleID
 WHERE l.customerID = 1;
 --OR
 SELECT v.make, v.model, v.year, l.startDate, l.endDate
-FROM Vehicle v, Lease l 
+FROM CarSchema.Vehicle v, CarSchema.Lease l 
 WHERE v.vehicleID = l.vehicleID AND l.customerID = 1;
 GO
 --Find the details of the most recent lease
-SELECT TOP 1 * FROM Lease
+SELECT TOP 1 * FROM CarSchema.Lease
 ORDER BY startDate DESC;
 GO
 --List all payments made in the year 2023
-SELECT * FROM Payment
+SELECT * FROM CarSchema.Payment
 WHERE YEAR(transactionDate) = 2023;
 --Retrieve customers who have not made any payments
 GO
-SELECT * FROM Customer
-WHERE customerID NOT IN (SELECT DISTINCT customerID FROM Lease l
-                          JOIN Payment p ON l.leaseID = p.leaseID);
+SELECT * FROM CarSchema.Customer
+WHERE customerID NOT IN (SELECT DISTINCT customerID FROM CarSchema.Lease l
+                          JOIN CarSchema.Payment p ON l.leaseID = p.leaseID);
 GO
 --Retrieve Car Details and Their Total Payments
 SELECT v.make, v.model, SUM(p.amount) AS TotalPayments
-FROM Vehicle v
-JOIN Lease l ON v.vehicleID = l.vehicleID
-JOIN Payment p ON l.leaseID = p.leaseID
+FROM CarSchema.Vehicle v
+JOIN CarSchema.Lease l ON v.vehicleID = l.vehicleID
+JOIN CarSchema.Payment p ON l.leaseID = p.leaseID
 GROUP BY v.make, v.model;
 --OR
 SELECT v.make, v.model, SUM(p.amount) AS TotalPayments
-FROM Vehicle v,Lease l,Payment p 
+FROM CarSchema.Vehicle v,CarSchema.Lease l,CarSchema.Payment p 
 WHERE v.vehicleID = l.vehicleID AND l.leaseID = p.leaseID
 GROUP BY v.make, v.model;
 GO
 --Calculate Total Payments for Each Customer
 SELECT c.firstName, c.lastName, SUM(p.amount) AS TotalPayments
-FROM Customer c
-JOIN Lease l ON c.customerID = l.customerID
-JOIN Payment p ON l.leaseID = p.leaseID
+FROM CarSchema.Customer c
+JOIN CarSchema.Lease l ON c.customerID = l.customerID
+JOIN CarSchema.Payment p ON l.leaseID = p.leaseID
 GROUP BY c.firstName, c.lastName;
 --OR
 SELECT c.firstName, c.lastName, SUM(p.amount) AS TotalPayments
-FROM Customer c,Lease l,Payment p 
+FROM CarSchema.Customer c,CarSchema.Lease l,CarSchema.Payment p 
 WHERE c.customerID = l.customerID AND  l.leaseID = p.leaseID
 GROUP BY c.firstName, c.lastName;
 GO
 --List Car Details for Each Lease
 SELECT v.make, v.model, v.year, l.startDate, l.endDate
-FROM Vehicle v
-JOIN Lease l ON v.vehicleID = l.vehicleID;
+FROM CarSchema.Vehicle v
+JOIN CarSchema.Lease l ON v.vehicleID = l.vehicleID;
 --OR
 SELECT v.make, v.model, v.year, l.startDate, l.endDate
-FROM Vehicle v,Lease l 
+FROM CarSchema.Vehicle v,CarSchema.Lease l 
 WHERE v.vehicleID = l.vehicleID;
 GO
 --Retrieve Details of Active Leases with Customer and Car Information
 SELECT c.firstName, c.lastName, v.make, v.model, l.startDate, l.endDate
-FROM Lease l
-JOIN Customer c ON l.customerID = c.customerID
-JOIN Vehicle v ON l.vehicleID = v.vehicleID
+FROM CarSchema.Lease l
+JOIN CarSchema.Customer c ON l.customerID = c.customerID
+JOIN CarSchema.Vehicle v ON l.vehicleID = v.vehicleID
 WHERE l.endDate > GETDATE();
 --OR
 SELECT c.firstName, c.lastName, v.make, v.model, l.startDate, l.endDate
-FROM Lease l,Customer c,Vehicle v 
+FROM CarSchema.Lease l,CarSchema.Customer c,CarSchema.Vehicle v 
 WHERE l.customerID = c.customerID AND l.vehicleID = v.vehicleID AND l.endDate > GETDATE();
 GO
 --Find the Customer Who Has Spent the Most on Leases
 SELECT TOP 1 c.firstName, c.lastName, SUM(p.amount) AS TotalSpent
-FROM Customer c
-JOIN Lease l ON c.customerID = l.customerID
-JOIN Payment p ON l.leaseID = p.leaseID
+FROM CarSchema.Customer c
+JOIN CarSchema.Lease l ON c.customerID = l.customerID
+JOIN CarSchema.Payment p ON l.leaseID = p.leaseID
 GROUP BY c.firstName, c.lastName
 ORDER BY TotalSpent DESC;
 --OR
 SELECT TOP 1 c.firstName, c.lastName, SUM(p.amount) AS TotalSpent
-FROM Customer c, Lease l,Payment p 
+FROM CarSchema.Customer c, CarSchema.Lease l,CarSchema.Payment p 
 WHERE c.customerID = l.customerID AND l.leaseID = p.leaseID
 GROUP BY c.firstName, c.lastName
 ORDER BY TotalSpent DESC;
 GO
 --List All Cars with Their Current Lease Information
 SELECT v.make, v.model, l.startDate, l.endDate, c.firstName, c.lastName
-FROM Vehicle v
-JOIN Lease l ON v.vehicleID = l.vehicleID
-JOIN Customer c ON l.customerID = c.customerID
+FROM CarSchema.Vehicle v
+JOIN CarSchema.Lease l ON v.vehicleID = l.vehicleID
+JOIN CarSchema.Customer c ON l.customerID = c.customerID
 WHERE l.endDate > GETDATE();
 --OR
 SELECT v.make, v.model, l.startDate, l.endDate, c.firstName, c.lastName
-FROM Vehicle v,Lease l,Customer c 
+FROM CarSchema.Vehicle v,CarSchema.Lease l,CarSchema.Customer c 
 WHERE v.vehicleID = l.vehicleID AND l.customerID = c.customerID AND l.endDate > GETDATE();
 GO
-
 
 
 
