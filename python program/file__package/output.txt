@@ -1,0 +1,27 @@
+[
+    {
+        "name": "Aaron",
+        "age": 20,
+        "city": "Madurai"
+    },
+    {
+        "name": "Mickey",
+        "age": 25,
+        "city": "Paris"
+    },
+    {
+        "name": "Choki",
+        "age": 21,
+        "city": "Paris"
+    },
+    {
+        "name": "Tomie",
+        "age": 22,
+        "city": "Chennai"
+    },
+    {
+        "name": "Mickeychoki",
+        "age": 21,
+        "city": "Dream land"
+    }
+]

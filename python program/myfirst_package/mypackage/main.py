@@ -1,0 +1,11 @@
+import math_operations
+result = math_operations.add(5, 3)
+print("Addition:", result)
+result = math_operations.subtract(10, 4)
+print("Subtraction:", result)
+result = math_operations.mul(10, 4)
+print("multiplication:", result)
+result = math_operations.mod(10, 4)
+print("modulus:", result)
+result = math_operations.div(10, 4)
+print("division:", result)

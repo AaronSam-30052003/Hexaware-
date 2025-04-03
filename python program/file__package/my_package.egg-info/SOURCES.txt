@@ -1,0 +1,13 @@
+setup.py
+file_package/__init__.py
+file_package/csv_reader.py
+file_package/excel_reader.py
+file_package/file_converter.py
+file_package/file_reader.py
+file_package/json_converter.py
+my_package.egg-info/PKG-INFO
+my_package.egg-info/SOURCES.txt
+my_package.egg-info/dependency_links.txt
+my_package.egg-info/entry_points.txt
+my_package.egg-info/requires.txt
+my_package.egg-info/top_level.txt

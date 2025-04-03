@@ -1,0 +1,6 @@
+Metadata-Version: 2.1
+Name: my-package
+Version: 0.1
+Author-email: aaronvsam289@gmail.com
+Requires-Dist: pandas
+Requires-Dist: openpyxl

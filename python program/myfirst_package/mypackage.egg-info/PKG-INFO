@@ -1,0 +1,10 @@
+Metadata-Version: 2.1
+Name: mypackage
+Version: 0.1
+Summary: A sample Python package for math operations
+Author: Aaron sam
+Author-email: mickeychoki.email@example.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
