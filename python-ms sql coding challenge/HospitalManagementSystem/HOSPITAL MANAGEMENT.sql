@@ -56,14 +56,14 @@ INSERT INTO hospitalschema.Appointment (patientId, doctorId, appointmentDate, de
 GO
 
 
+drop table hospitalschema.Appointment;
+drop table hospitalschema.Doctor;
+drop table hospitalschema.patient;
+GO
 select* from hospitalschema.Appointment;
-
-
-
-
-
-
-
+select* from hospitalschema.Doctor;
+select* from hospitalschema.patient;
+GO
 
 
 
